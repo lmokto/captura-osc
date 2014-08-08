@@ -1,7 +1,6 @@
+node_modules/
 randomStuff/
 backend/node_modules/
 .git/
-
 .DS_Store
-
 thumbs.db

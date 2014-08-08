@@ -26,7 +26,7 @@ import netP5.*;
 import processing.serial.*;
 
 OscP5 oscP5;
-NetAddress myRemoteLocation;
+NetAddress myRemoteLocation1, myRemoteLocation2;
 
 
 //Variables para comunicación con Puerto Serie
@@ -97,7 +97,7 @@ void setup() {
   serial=null;
 
   //Inicializo el array del estado de sensores
-  for (int i=0; i<flags.length;i++) {
+  for (int i=0; i<flags.length; i++) {
     flags[i]=false;
   }
 
@@ -110,7 +110,8 @@ void setup() {
 
   //Inicializo los parámetros de IP y puerto a dónde envío los mensajes OSC
   oscP5 = new OscP5(this, 3000);
-  myRemoteLocation = new NetAddress("127.0.0.1", 3000);
+  myRemoteLocation1 = new NetAddress("127.0.0.1", 3000);
+  myRemoteLocation2 = new NetAddress("10.200.183.114", 3000);
 }
 
 /* En void draw() ejecuto en un loop infinito todas las operaciones de forma 
@@ -118,7 +119,7 @@ void setup() {
 
 void draw() {
   background(100, 80, 200);
- // frame.setLocation(5, 10);
+  // frame.setLocation(5, 10);
   ellipseMode(CENTER);
   smooth();
   noStroke();
@@ -133,28 +134,36 @@ void draw() {
   if (serial != null) {
     String[]arduino=split(serial, ',');
 
-    for (int i=0;i<m.length;i++) {
- m [i] = Integer.parseInt(arduino[i]);
+    for (int i=0; i<m.length; i++) {
+      m [i] = Integer.parseInt(arduino[i]);
       //Declaro los tags de los mensajes OSC
       println("sensor "+i+":"+m[i]);
-     
+
       OscMessage myMessage0 = new OscMessage("/sensor_0");
       myMessage0.add(m[0]);
-      oscP5.send(myMessage0, myRemoteLocation);
+      oscP5.send(myMessage0, myRemoteLocation1);
+      oscP5.send(myMessage0, myRemoteLocation2);
+
 
       OscMessage myMessage1 = new OscMessage("/sensor_1");
       myMessage1.add(m[1]);
-      oscP5.send(myMessage1, myRemoteLocation);
+      oscP5.send(myMessage1, myRemoteLocation1);
+      oscP5.send(myMessage1, myRemoteLocation2);
+
 
       OscMessage myMessage2 = new OscMessage("/sensor_2");
       myMessage2.add(m[2]);
-      oscP5.send(myMessage2, myRemoteLocation);
+      oscP5.send(myMessage2, myRemoteLocation1);
+      oscP5.send(myMessage2, myRemoteLocation2);
+
 
       OscMessage myMessage3 = new OscMessage("/sensor_3");
       myMessage3.add(m[3]);
-      oscP5.send(myMessage3, myRemoteLocation);
+      oscP5.send(myMessage3, myRemoteLocation1);
+      oscP5.send(myMessage3, myRemoteLocation2);
+
+ 
     }
   }
-
 }
 
