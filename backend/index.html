@@ -1,23 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" ng-app="app">
     <head>
-        <script src='http://localhost:3000/socket.io/socket.io.js'></script>
-        <script>
-            var socket = io.connect('//localhost:3000');
-            var mensajesTotal = 0;
-    		socket.on('message', function (message) {
-				mensajesTotal++;
-                document.getElementById("mensaje").innerHTML = "Mensaje nro:" + mensajesTotal + " - " + message;
-
-                
-			});
-        </script>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+        <script src='http://127.0.0.1:3000/socket.io/socket.io.js'></script>
+   //      <script>
+   //          var socket = io.connect('//localhost:3000');
+   //          var mensajesTotal = 0;
+   //  		socket.on('message', function (message){
+			// 	mensajesTotal++;
+   //              document.getElementById("mensaje").innerHTML = "Mensaje nro:" + mensajesTotal + " - " + message;
+			// });
+   //      </script>
     </head>
     
+    
     <body>
-        Ultimo mensaje recibido:<br>
-        <span id="mensaje">-</span>
+        <div ng-controller="infoCtrl">
+            Ultimo mensaje recibido:<br>
+            <span id="mensaje">-</span>
+            <span>{{informacion}}</span>
+        </div>
     </body>
+    <script>
+
+        angular.module('app', ['ui.bootstrap'])
+            .controller('infoCtrl', function($scope, socket){
+                $scope.informacion = [];
+                $scope.cache = [];
+                socket.on('msg', function(data){
+                    console.log(data)
+                    $scope.informacion = data;
+                    //$scope.cache.push(data.msg);
+                });
+
+            })
+            .factory('socket', function($rootScope){
+            
+                var socket = io.connect();
+                return {
+                  on: function(eventName, callback){
+                    socket.on(eventName, function(){
+                        var args = arguments;
+                        $rootScope.$apply(function(){
+                            callback.apply(socket, args);
+                        });
+                    });
+                  }
+                };
+
+            });
+
+    </script>
 </html>
-
-

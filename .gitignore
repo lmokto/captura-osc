@@ -1,4 +1,5 @@
 randomStuff/
+backend/node_modules/
 .git/
 
 .DS_Store
